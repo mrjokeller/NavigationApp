@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Meta -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <!-- Font Awesome-->
+  <script src="https://kit.fontawesome.com/2cc61ebdfb.js" crossorigin="anonymous"></script>
+  <!-- Local Files -->
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="navigation.js"></script>
+
+  <title>Navigation App</title>
+</head>
+
+<body onload="initMap()">
+  <main>
+    <div class="floating-modal">
+      <h1>Navigation App</h1>
+      <br>
+      <radio-group class="transportation-radio-wrapper">
+        <input class="transportation-radio" type="radio" name="mode" id="mode-driving" value="car" checked>
+        <label for="mode-driving">
+          <i class="fa-solid fa-car"></i>
+        </label>
+        <input class="transportation-radio" type="radio" name="mode" id="mode-walking" value="foot">
+        <label for="mode-walking">
+          <i class="fa-solid fa-person-walking"></i>
+        </label>
+        <input class="transportation-radio" type="radio" name="mode" id="mode-cycling" value="bike">
+        <label for="mode-cycling">
+          <i class="fa-solid fa-bicycle"></i>
+        </label>
+      </radio-group>
+      <br>
+      <div class="search-wrapper">
+        <div class="input-wrapper">
+          <div class="searchfield">
+            <label for="origin">Von:</label>
+            <input type="text" id="origin-input-field" placeholder="Start">
+          </div>
+          <div class="searchfield">
+            <label for="destination">Nach:</label>
+            <input type="text" id="destination-input-field" placeholder="Ziel">
+          </div>
+        </div>
+        <button>
+          <i class="fa-solid fa-arrow-right-arrow-left" style="rotate: 90deg;"></i>
+        </button>
+      </div>
+      <div id="search-results-wrapper">
+
+        <!-- Dynamically filled up-->
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Leaflet Map -->
+  <div id="map"></div>
+</body>
+
+</html>
