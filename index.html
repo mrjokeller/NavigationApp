@@ -52,12 +52,13 @@
             <input type="text" id="destination-input-field" placeholder="Ziel">
           </div>
         </div>
-        <button>
+        <button onclick="switchOriginAndDestination()">
           <i class="fa-solid fa-arrow-right-arrow-left" style="rotate: 90deg;"></i>
         </button>
       </div>
       <div id="search-results-wrapper">
-
+        <div id="loadingSpinner" class="spinner" style="display: none;"></div>
+        <p id="search-results"></p>
         <!-- Dynamically filled up-->
 
       </div>

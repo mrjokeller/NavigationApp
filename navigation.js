@@ -19,7 +19,7 @@ const zielListe = [];
 const zielHintergrundListeLat = [];
 const zielHintergrundListeLon = [];
 
-let markerGroupStart, markerGroupZiel, routeGroup;
+let markerGroupOrigin, markerGroupDestination, routeGroup;
 
 // Different icon colors
 const ColorIcon = L.Icon.extend({
@@ -49,8 +49,8 @@ function initMap() {
     zoomControl: false,
   });
 
-  markerGroupStart = L.layerGroup().addTo(map);
-  markerGroupZiel = L.layerGroup().addTo(map);
+  markerGroupOrigin = L.featureGroup().addTo(map);
+  markerGroupDestination = L.featureGroup().addTo(map);
   routeGroup = L.layerGroup().addTo(map);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
   map.setView([51, 10], 6);
@@ -83,13 +83,6 @@ function initMap() {
   document
     .getElementById("btn-search-destination")
     .addEventListener("click", searchDestinationLocation); */
-  document
-    .getElementById("dropdown-origin-locations")
-    .addEventListener("change", setOriginMarker);
-  document
-    .getElementById("dropdown-destination-locations")
-    .addEventListener("change", setDestinationMarker);
-  document.getElementById("route").addEventListener("click", loadBestRoute);
   document
     .getElementById("alternative")
     .addEventListener("click", displayAlternativeRoutes);
@@ -137,16 +130,19 @@ function onResultClick(result, inputFieldId) {
   } else {
     destinationLocation = result;
   }
-  drawMarker(result.lat, result.lon, inputFieldId === "origin-input-field" ? greenIcon : redIcon);
+  const markerGroup = inputFieldId === "origin-input-field" ? markerGroupOrigin : markerGroupDestination;
+  const icon = inputFieldId === "origin-input-field" ? greenIcon : redIcon;
+  drawMarker(result.lat, result.lon, icon, markerGroup);
   if (inputFieldId === "destination-input-field") {
-    fetchRouteJSON();
+    loadBestRoute();
   }
   document.getElementById(inputFieldId).value = result.displayName;
   container.innerHTML = "";
 }
 
-function drawMarker(lat, lon, icon) {
-  L.marker([lat, lon], { icon }).addTo(map);
+function drawMarker(lat, lon, icon, group) {
+  group.clearLayers();
+  L.marker([lat, lon], { icon }).addTo(group);
 }
 
 async function fetchRouteJSON() {
@@ -157,8 +153,8 @@ async function fetchRouteJSON() {
   console.log(url);
   const response = await fetch(url);
   const json = await response.json();
-  drawRoute(json.routes[0]);
-  return response.json();
+
+  return json;
 }
 
 function drawRoute(route, color = "blue") {
@@ -181,12 +177,12 @@ function drawRoute(route, color = "blue") {
 }
 
 async function loadBestRoute() {
-  const verkehrsmittel = getTransportationMode();
-  if (!verkehrsmittel) return;
-
   routeGroup.clearLayers();
-  json = await fetchRouteJSON(verkehrsmittel);
-
+  showLoadingSpinner();
+  console.log("shown");
+  json = await fetchRouteJSON();
+  hideLoadingSpinner();
+  console.log("hidden");
   if (json.code === "NoRoute") {
     alert(
       "Route konnte nicht berechnet werden. Bitte überprüfen Sie Ihre Eingabe!"
@@ -195,6 +191,18 @@ async function loadBestRoute() {
     drawRoute(json.routes[0]);
     alternativeAnzahl = json.routes.length;
   }
+}
+
+// Function to show the loading spinner
+function showLoadingSpinner() {
+  const loadingSpinner = document.getElementById('loadingSpinner');
+  console.log(loadingSpinner);
+  loadingSpinner.setAttribute('style', 'display: block');
+}
+
+// Function to hide the loading spinner
+function hideLoadingSpinner() {
+  document.getElementById('loadingSpinner').style.display = 'none';
 }
 
 async function displayAlternativeRoutes() {
